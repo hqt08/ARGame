@@ -8,18 +8,15 @@ public class MovementController : MonoBehaviour {
 	public Vector3 offset = new Vector3(0,10,0);
 	public int screenOffset = 50;
 
+	private GameObject goal; // ball goal gameobject reference
 	private bool goalSetup; // has the goal already been setup?
 	private RaycastHit mHit; // raycast buffer
 
-	// Use this for initialization
-	void Start () {
-	}
 	
-	// Update is called once per frame
 	void Update () {
 		// Handle color detection events only if the GameObject is currently
-		// being rendered and is being tracked
-		if (GameObject.Find("metaioTracker").GetComponent<metaioTracker>().isTracked) {
+		// is being tracked and game not yet over
+		if (GameObject.Find("metaioTracker").GetComponent<metaioTracker>().isTracked && !gameManager.GetComponent<GameManager>().done) {
 			Vector3 footPositionOnScreen = Camera.main.WorldToScreenPoint(gameObject.transform.position) - offset;
 			deviceCamera.SendMessage("GetPixelColor", footPositionOnScreen);
 			if (!goalSetup) {
@@ -29,17 +26,19 @@ public class MovementController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Simulate player falling the off the world.
+	/// </summary>
 	void FallOffTheWorld() {
-		Debug.Log("Falling off the world");
-		gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - Time.deltaTime * 100f, gameObject.transform.position.z);
+		Vector3 downwards = - gameObject.transform.up.normalized;
+		gameObject.transform.position += downwards * 20f;
 		// Lose game if player has fallen out of view
 		if (!GetComponentInChildren<Renderer>().isVisible) gameManager.SendMessage("Lose");
 	}
 
-	void AlrightInTheWorld() {
-		Debug.Log("Alright in the world");
-	}
-
+	/// <summary>
+	/// Sets up the goal based on the furthest corner point.
+	/// </summary>
 	void SetupGoal(Vector3 playerPos) {
 		// Array of corner edges in field of view
 		Ray[] cornerPos = new Ray[4];
@@ -60,10 +59,18 @@ public class MovementController : MonoBehaviour {
 				}
 			}
 		}
-		GameObject goal = (GameObject) Instantiate(goalPrefab, goalPos, Quaternion.identity);
+		goal = (GameObject) Instantiate(goalPrefab, goalPos, Quaternion.identity);
 		goal.AddComponent<GoalController>();
 		goal.GetComponent<GoalController>().gameManager = gameManager;
 		goal.GetComponent<GoalController>().position = goalPos;
 		goal.transform.parent = GameObject.Find("metaioTracker").transform;
+	}
+
+	/// <summary>
+	/// For recalculating the goal position
+	/// </summary>
+	public void ResetGoal() {
+		GameObject.Destroy(goal);
+		goalSetup = false;
 	}
 }

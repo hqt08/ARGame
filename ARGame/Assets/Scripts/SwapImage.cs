@@ -9,7 +9,7 @@ public class SwapImage : MonoBehaviour {
 	int n = 1;
 
 	// Use this for initialization
-	void Start () {
+	public void StartAnim () {
 		n = sprites.Length;
 		StartCoroutine(Swappy());
 	}
