@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 	public Text timer;
 	public Text info;
 	public AudioSource audioSource;
+	public AudioClip audioClipWin,audioClipLose;
 
 	private float time = 0f;
 	public float totaltime = 1000f;
@@ -33,22 +34,28 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Win() {
-		RestartSound();
-		done = true;
-		WinScreen.SetActive(true);
-		info.text = "Press Space to Restart...";
+		if (!done) {
+			RestartSound(audioClipWin);
+			done = true;
+			WinScreen.SetActive(true);
+			info.text = "Press Space to Restart...";
+		}
 	}
 
 	void Lose() {
-		RestartSound();
-		audioSource.pitch = 0.5f;
-		done = true;
-		LoseScreen.SetActive(true);
-		info.text = "Press Space to Restart...";
+		if (!done) {
+			RestartSound(audioClipLose);
+			done = true;
+			LoseScreen.SetActive(true);
+			info.text = "Press Space to Restart...";
+		}
 	}
 
-	void RestartSound() {
+	void RestartSound(AudioClip audioClip) {
 		audioSource.Stop();
+		audioSource.clip = audioClip;
+		audioSource.loop = false;
+		audioSource.volume = 0.8f;
 		audioSource.Play();
 	}
 }

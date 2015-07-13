@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class cameraRenderEffect : MonoBehaviour {
+public class CameraRenderEffect : MonoBehaviour {
 
 	public Color thresholdColor = new Color(0.3f,0.3f,0.3f,1f);
 	public Color shadingColor = new Color(0f,1f,0f,1f);
@@ -17,8 +17,8 @@ public class cameraRenderEffect : MonoBehaviour {
 			mat.hideFlags = HideFlags.HideAndDontSave;
 
 			// Set up threshold and shading colors
-			mat.SetColor("Threshold Color", thresholdColor);
-			mat.SetColor("Shading Color", shadingColor);
+			mat.SetColor("_ThresholdColor", thresholdColor);
+			mat.SetColor("_ShadingColor", shadingColor);
 		}
 
 		//mat is the material containing your shader

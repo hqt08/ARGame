@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class setupSceneUsingColor : MonoBehaviour {
+public class ColorDetection : MonoBehaviour {
 
 	public Camera camera;
 	public Color thresholdColor = new Color(0.3f,0.3f,0.3f);
